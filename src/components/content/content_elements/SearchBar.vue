@@ -26,7 +26,7 @@
       </article>
       <br>
       <label for class="radio">
-        <input type="radio" name="search" @click="setRadio('all')" v-model="searchType" value="all"> All
+        <input type="radio" name="search" @click="setRadio('')" v-model="searchType" value="all"> All
       </label>
       <label for class="radio">
         <input
@@ -38,10 +38,22 @@
         > Findings
       </label>
       <label for class="radio">
-        <input type="radio" name="search" v-model="searchType"> History
+        <input
+          type="radio"
+          name="search"
+          @click="setRadio('(situation)')"
+          v-model="searchType"
+          value="(situation)"
+        > History
       </label>
       <label for class="radio">
-        <input type="radio" name="search" v-model="searchType"> Disorders
+        <input
+          type="radio"
+          name="search"
+          @click="setRadio('(disorder)')"
+          v-model="searchType"
+          value="(disorder)"
+        > Disorders
       </label>
       <label for class="radio">
         <input
@@ -53,7 +65,13 @@
         > Procedures
       </label>
       <label for class="radio">
-        <input type="radio" name="search" v-model="searchType"> Qualifiers
+        <input
+          type="radio"
+          name="search"
+          @click="setRadio('(qualifier)')"
+          v-model="searchType"
+          value="(qualifier)"
+        > Qualifiers
       </label>
     </div>
   </div>

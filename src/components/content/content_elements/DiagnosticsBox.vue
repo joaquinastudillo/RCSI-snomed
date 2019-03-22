@@ -13,7 +13,7 @@
         </button>
       </div>
       <div class="control column is-one-quarter" id="searchBar">
-          <input class="input" type="text" placeholder="filter..." v-model="search">
+        <input class="input" type="text" placeholder="filter..." v-model="search">
       </div>
       <table class="table">
         <thead>
@@ -22,16 +22,22 @@
               <abbr title="Position">Id</abbr>
             </th>
             <th>Description</th>
-            <th>
+            <th>Mappings</th>
+            <!--<th>
               <abbr title="Won">Actions</abbr>
-            </th>
+            </th>-->
           </tr>
         </thead>
         <tbody>
           <tr :key="item.snomedCoreID" v-for="item in filteredItems">
-            <th>762656009</th>
-            <td>{{ item.snomedDescription }}</td>
+            <th>{{ item.snomedCoreID | toId }}</th>
             <td>
+              <a class="has-text-primary" :href="item.snomedCoreID" target="_blank">{{ item.snomedDescription }}</a>
+            </td>
+            <td>
+              <a class="button is-primary is-outlined" @click="getMappings(item.snomedCoreID)"><i class="fas fa-external-link-alt"></i></a>
+            </td>
+            <!--<td>
               <div class="field">
                 <input
                   class="is-checkradio is-block"
@@ -62,7 +68,7 @@
                 >
                 <label :for="`${item.snomedCoreID}/risk-factors`">Risk Factors</label>
               </div>
-            </td>
+            </td>-->
           </tr>
         </tbody>
       </table>
@@ -97,19 +103,32 @@ export default {
   },
   methods: {
     ...mapActions({
-      fetchData: "loadData"
+      fetchData: "loadData",
+      getMappingsData: "loadMappings"
     }),
     openModal() {
       this.$store.commit("SET_MODAL_VALUE");
+    },
+    getMappings(id) {
+      let idToFind = id.split('/id/')[1];
+      this.getMappingsData(idToFind);
+      this.openModal();
+    }
+  },
+  filters: {
+    toId(text) {
+      return text.split("/id/")[1];
     }
   },
   computed: {
     items() {
       return this.$store.getters.snomedElements;
     },
-    filteredItems(){
+    filteredItems() {
       return this.items.filter(item => {
-        return item.snomedDescription.toLowerCase().includes(this.search.toLowerCase());
+        return item.snomedDescription
+          .toLowerCase()
+          .includes(this.search.toLowerCase());
       });
     },
     displayModal() {
@@ -133,8 +152,8 @@ export default {
   display: flex;
   justify-content: space-between;
 }
-#searchBar{
-      display: flex;
-    float: right;
+#searchBar {
+  display: flex;
+  float: right;
 }
 </style>

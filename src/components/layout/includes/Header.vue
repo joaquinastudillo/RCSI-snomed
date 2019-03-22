@@ -5,9 +5,6 @@
                     <h1 class="title has-text-white">
                     Snomed Search Term
                     </h1>
-                    <h2 class="subtitle has-text-white">
-                      Bacon ipsum dolor amet strip steak tri-tip spare ribs flank ribeye prosciutto. Ball tip picanha brisket bresaola salami.
-                    </h2>
                 </div>
             </div>
       </section>

@@ -3,11 +3,53 @@
     <div class="modal-background"></div>
     <div class="modal-card">
       <header class="modal-card-head">
-        <p class="modal-card-title">Diagnostics</p>
+        <p class="modal-card-title">Mappings</p>
         <button class="delete" aria-label="close" @click="closeModal"></button>
       </header>
       <section class="modal-card-body">
-        <article class="message is-primary" v-if="this.$props.signs.length > 0">
+        <div class="timeline" v-if="mappings.snomedMappingType">
+          <header class="timeline-header">
+            <span class="tag is-medium is-primary">ICD11</span>
+          </header>
+          <div class="timeline-item">
+            <div class="timeline-marker is-icon">
+              <i class="fas fa-sitemap"></i>
+            </div>
+            <div class="timeline-content">
+              <p class="heading">description</p>
+              <p>{{ mappings.snomedMappingDescription }}</p>
+            </div>
+          </div>
+          <div class="timeline-header">
+            <span class="tag is-medium is-primary">End</span>
+          </div>
+        </div>
+
+        <div v-else-if="Object.keys(mappings).length" class="container">
+          <div class="timeline" :key="index" v-for="(item,index) in mappings">
+            <header class="timeline-header">
+              <span class="tag is-medium is-primary">{{ index }}</span>
+            </header>
+            <div class="timeline-item" :key="index" v-for="(element,index) in item">
+              <div class="timeline-marker is-icon">
+                <i class="fas fa-sitemap"></i>
+              </div>
+              <div class="timeline-content">
+                <p class="heading">description</p>
+                <p>{{element.snomedMappingDescription}}</p>
+              </div>
+            </div>
+            <div class="timeline-header">
+              <span class="tag is-medium is-primary">End</span>
+            </div>
+            <br>
+          </div>
+        </div>
+
+        <div class="content" v-else>
+          <p>this item doesn't have relationships</p>
+        </div>
+        <!--<article class="message is-primary" v-if="this.$props.signs.length > 0">
           <div class="message-header">
             <p>Signs</p>
           </div>
@@ -45,7 +87,7 @@
               >{{ riskFactor.snomedDescription }}</li>
             </ul>
           </div>
-        </article>
+        </article>-->
       </section>
       <footer class="modal-card-foot">
         <button class="button is-success">Save changes</button>
@@ -60,15 +102,11 @@ export default {
   name: "DiagnosticsModal",
   props: ["signs", "symptoms", "riskFactors"],
   computed: {
-    zeroDataInModal() {
-      return this.$props.riskFactors.length === 0 ||
-        this.$props.signs.length === 0 ||
-        this.$props.symptoms.length === 0
-        ? false
-        : true;
-    },
     displayModal() {
       return this.$store.getters.showModal;
+    },
+    mappings() {
+      return this.$store.getters.mappingElements;
     }
   },
   methods: {
@@ -78,3 +116,7 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+@import "../../../../node_modules/bulma-timeline/dist/css/bulma-timeline.min.css";
+</style>
