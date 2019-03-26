@@ -11,12 +11,9 @@ export const loadData = ({ commit }, searchData) => {
     searchData.type = "";
   }
   let apiUrl =
-    "http://cpcr02.tcd.ie:8080/CancerResearchUK/interfaces/query/snomed/searchtext/";
-    const agent = new https.Agent({  
-      rejectUnauthorized: false
-    });
+    "cpcr02.tcd.ie:8080/CancerResearchUK/interfaces/query/snomed/searchtext/";
   axios
-    .get(`${apiUrl} ${searchData.text}${searchData.type}?type=json`, { httpsAgent: agent })
+    .get(`${apiUrl}${searchData.text}${searchData.type}`)
     .then(response => {
       const snomedItems = response.data.snomedcoreItem;
       commit("SET_SNOMED_ITEMS", snomedItems);
@@ -28,13 +25,10 @@ export const loadData = ({ commit }, searchData) => {
 };
 
 export const loadMappings = ({ commit }, id) => {
-  let apiUrl = `http://cpcr02.tcd.ie:8080/CancerResearchUK/interfaces/query/snomed/mappings/${id}`;
+  let apiUrl = `cpcr02.tcd.ie:8080/CancerResearchUK/interfaces/query/snomed/mappings/${id}`;
   commit("SET_LOADING_VALUE");
-  const agent = new https.Agent({  
-    rejectUnauthorized: false
-  });
   axios
-    .get(apiUrl, { httpsAgent: agent })
+    .get(apiUrl)
     .then(response => {
       //check if data is coming
       if (response.data.snomedMappingItem) {
