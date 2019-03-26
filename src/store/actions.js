@@ -1,6 +1,7 @@
 import axios from "axios";
 
 var _ = require("lodash");
+const https = require('https');
 
 export const loadData = ({ commit }, searchData) => {
   //let apiUrl = process.env.API_URL;
@@ -11,7 +12,12 @@ export const loadData = ({ commit }, searchData) => {
   }
   let apiUrl =
     "http://cpcr02.tcd.ie:8080/CancerResearchUK/interfaces/query/snomed/searchtext/";
-  axios
+    const instance = axios.create({
+      httpsAgent: new https.Agent({  
+        rejectUnauthorized: false
+      })
+    });
+  instance
     .get(`${apiUrl} ${searchData.text}${searchData.type}?type=json`)
     .then(response => {
       const snomedItems = response.data.snomedcoreItem;
@@ -26,7 +32,12 @@ export const loadData = ({ commit }, searchData) => {
 export const loadMappings = ({ commit }, id) => {
   let apiUrl = `http://cpcr02.tcd.ie:8080/CancerResearchUK/interfaces/query/snomed/mappings/${id}`;
   commit("SET_LOADING_VALUE");
-  axios
+  const instance = axios.create({
+    httpsAgent: new https.Agent({  
+      rejectUnauthorized: false
+    })
+  });
+  instance
     .get(apiUrl)
     .then(response => {
       //check if data is coming
