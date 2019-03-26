@@ -12,13 +12,11 @@ export const loadData = ({ commit }, searchData) => {
   }
   let apiUrl =
     "http://cpcr02.tcd.ie:8080/CancerResearchUK/interfaces/query/snomed/searchtext/";
-    const instance = axios.create({
-      httpsAgent: new https.Agent({  
-        rejectUnauthorized: false
-      })
+    const agent = new https.Agent({  
+      rejectUnauthorized: false
     });
-  instance
-    .get(`${apiUrl} ${searchData.text}${searchData.type}?type=json`)
+  axios
+    .get(`${apiUrl} ${searchData.text}${searchData.type}?type=json`, { httpsAgent: agent })
     .then(response => {
       const snomedItems = response.data.snomedcoreItem;
       commit("SET_SNOMED_ITEMS", snomedItems);
@@ -32,13 +30,11 @@ export const loadData = ({ commit }, searchData) => {
 export const loadMappings = ({ commit }, id) => {
   let apiUrl = `http://cpcr02.tcd.ie:8080/CancerResearchUK/interfaces/query/snomed/mappings/${id}`;
   commit("SET_LOADING_VALUE");
-  const instance = axios.create({
-    httpsAgent: new https.Agent({  
-      rejectUnauthorized: false
-    })
+  const agent = new https.Agent({  
+    rejectUnauthorized: false
   });
-  instance
-    .get(apiUrl)
+  axios
+    .get(apiUrl, { httpsAgent: agent })
     .then(response => {
       //check if data is coming
       if (response.data.snomedMappingItem) {
