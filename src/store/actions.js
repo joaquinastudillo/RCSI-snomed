@@ -10,7 +10,7 @@ export const loadData = ({ commit }, searchData) => {
     searchData.type = "";
   }
   let apiUrl =
-    "http://localhost:8080/CancerResearchUK/interfaces/query/snomed/searchtext/";
+    "http://cpcr02.tcd.ie:8080/CancerResearchUK/interfaces/query/snomed/searchtext/";
   axios
     .get(`${apiUrl} ${searchData.text}${searchData.type}?type=json`)
     .then(response => {
@@ -24,7 +24,7 @@ export const loadData = ({ commit }, searchData) => {
 };
 
 export const loadMappings = ({ commit }, id) => {
-  let apiUrl = `http://localhost:8080/CancerResearchUK/interfaces/query/snomed/mappings/${id}`;
+  let apiUrl = `http://cpcr02.tcd.ie:8080/CancerResearchUK/interfaces/query/snomed/mappings/${id}`;
   commit("SET_LOADING_VALUE");
   axios
     .get(apiUrl)

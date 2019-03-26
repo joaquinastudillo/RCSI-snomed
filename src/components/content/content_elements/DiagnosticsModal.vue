@@ -9,7 +9,7 @@
       <section class="modal-card-body">
         <div class="timeline" v-if="mappings.snomedMappingType">
           <header class="timeline-header">
-            <span class="tag is-medium is-primary">ICD11</span>
+            <span class="tag is-medium is-primary">{{ mappings.snomedMappingType }}</span>
           </header>
           <div class="timeline-item">
             <div class="timeline-marker is-icon">
