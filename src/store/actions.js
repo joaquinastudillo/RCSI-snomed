@@ -10,9 +10,9 @@ export const loadData = ({ commit }, searchData) => {
     searchData.type = "";
   }
   let apiUrl =
-  "http://cpcr02.tcd.ie:8080/CancerResearchUK/interfaces/query/snomed/searchtext/blood (finding)?type=json";
+    "http://cpcr02.tcd.ie:8080/CancerResearchUK/interfaces/query/snomed/searchtext/";
   axios
-    .get(apiUrl)
+    .get(`${apiUrl} ${searchData.text}${searchData.type}?type=json`)
     .then(response => {
       const snomedItems = response.data.snomedcoreItem;
       commit("SET_SNOMED_ITEMS", snomedItems);
