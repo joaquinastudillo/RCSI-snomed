@@ -2,7 +2,7 @@
   <v-app>
     <v-toolbar app>
       <v-toolbar-title class="headline text-uppercase">
-        <span>Vuetify</span>
+        <span>Snomedcode</span>
         <span class="font-weight-light"> TREE VIEW</span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
@@ -20,7 +20,6 @@ import Main from './components/Main'
 export default {
   name: 'App',
   components: {
-    HelloWorld,
     Main
   },
   data () {

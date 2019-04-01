@@ -1,7 +1,19 @@
 <template>
   <v-container>
-    <v-layout text-xs-center wrap>
-      <v-flex xs-12>
+    <v-card class="mx-auto" max-width="800">
+      <v-sheet class="pa-3 teal accent-4 lighten-2">
+        <v-text-field
+          v-model="search"
+          label="Search Snomed Term"
+          dark
+          flat
+          solo-inverted
+          hide-details
+          clearable
+          clear-icon="mdi-close-circle-outline"
+        ></v-text-field>
+      </v-sheet>
+      <v-card-text>
         <v-treeview
           :items="items"
           :load-children="fetchsnomedcoreItems"
@@ -12,13 +24,14 @@
           transition
           item-key="text"
           item-text="text"
+          :search="search"
         >
           <template v-slot:prepend="{ item, active }">
             <v-icon v-if="!item.children" :color="active ? 'primary' : ''">mdi-account</v-icon>
           </template>
         </v-treeview>
-      </v-flex>
-    </v-layout>
+      </v-card-text>
+    </v-card>
   </v-container>
 </template>
 
@@ -30,7 +43,8 @@ export default {
   components: {},
   data() {
     return {
-      snomedcoreItems: []
+      snomedcoreItems: [],
+      search: null
     };
   },
   computed: {
@@ -46,7 +60,7 @@ export default {
   methods: {
     async fetchsnomedcoreItems(item) {
       await pause(1500);
-      const url = `http://localhost:8080/CancerResearchUK/interfaces/query/snomed/tree/subclass/${
+      let url = `http://localhost/php-middleware/index.php/?route=tree&term=${
         item.text
       }`;
       return axios
@@ -66,7 +80,7 @@ export default {
               }
             } else {
               item.children.push({
-                text: "No data more to display"
+                text: "No data to display"
               });
             }
           }
