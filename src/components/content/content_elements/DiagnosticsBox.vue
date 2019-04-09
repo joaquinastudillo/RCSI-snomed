@@ -5,7 +5,7 @@
       :signs="this.signs"
       :riskFactors="this.riskFactors"
     />
-    <div class="box" v-if="Object.keys(items).length">
+    <div class="box" v-if="this.filteredItems !== undefined">
       <div id="headerResults">
         <h4 id="const" class="title is-3">Results: {{ Object.keys(filteredItems).length }}</h4>
         <button class="button is-info" @click="openModal" v-if="showFormButton">
@@ -30,12 +30,28 @@
         </thead>
         <tbody>
           <tr :key="item.snomedCoreID" v-for="item in filteredItems">
-            <th>{{ item.snomedCoreID | toId }}</th>
+            <th v-if="item.snomedCoreID">{{ item.snomedCoreID | toId }}</th>
+            <th v-else>0</th>
             <td>
-              <a class="has-text-primary" :href="item.snomedCoreID" target="_blank">{{ item.snomedDescription }}</a>
+              <a
+                v-if="item.snomedDescription"
+                class="has-text-primary"
+                :href="item.snomedCoreID"
+                target="_blank"
+              >{{ item.snomedDescription }}</a>
+              <a
+                v-else
+                class="has-text-primary"
+                target="_blank"
+              >No data available</a>
             </td>
             <td>
-              <a class="button is-primary is-outlined" @click="getMappings(item.snomedCoreID)"><i class="fas fa-external-link-alt"></i></a>
+              <a class="button is-primary is-outlined" @click="getMappings(item.snomedCoreID)" v-if="item.snomedCoreID">
+                <i class="fas fa-external-link-alt"></i>
+              </a>
+              <a class="button is-danger is-outlined" v-else disabled>
+                <i class="fas fa-external-link-alt"></i>
+              </a>
             </td>
             <!--<td>
               <div class="field">
@@ -110,14 +126,18 @@ export default {
       this.$store.commit("SET_MODAL_VALUE");
     },
     getMappings(id) {
-      let idToFind = id.split('/id/')[1];
-      this.getMappingsData(idToFind);
-      this.openModal();
+      if (id) {
+        let idToFind = id.split("/id/")[1];
+        this.getMappingsData(idToFind);
+        this.openModal();
+      }
     }
   },
   filters: {
     toId(text) {
-      return text.split("/id/")[1];
+      if (text) {
+        return text.split("/id/")[1];
+      }
     }
   },
   computed: {
@@ -125,11 +145,19 @@ export default {
       return this.$store.getters.snomedElements;
     },
     filteredItems() {
-      return this.items.filter(item => {
-        return item.snomedDescription
-          .toLowerCase()
-          .includes(this.search.toLowerCase());
-      });
+      if (Array.isArray(this.items)) {
+        return this.items.filter(item => {
+          return item.snomedDescription
+            .toLowerCase()
+            .includes(this.search.toLowerCase());
+        });
+      } else {
+        if (typeof this.items === "object") {
+          return [this.items];
+        } else {
+          return [{}];
+        }
+      }
     },
     displayModal() {
       return this.$store.getters.showModal;
