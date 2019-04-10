@@ -1,6 +1,7 @@
 const state = {
     isLoading: false,
-    showModal: false
+    showModal: false,
+    showDeleteTermModal: false
 };
 
 const mutations = {
@@ -9,6 +10,9 @@ const mutations = {
     },
     SET_MODAL_VALUE(state){
         state.showModal = !state.showModal;
+    },
+    SET_DELETE_TERM_MODAL_VALUE(state){
+        state.showDeleteTermModal = !state.showDeleteTermModal;
     }
 };
 
@@ -19,6 +23,9 @@ const actions = {
     setModal: ({ commit }) => {
         commit("SET_MODAL_VALUE");
     },
+    setDeleteTermModal: ({ commit }) => {
+        commit("SET_DELETE_TERM_MODAL_VALUE");
+    },
 };
 
 const getters = {
@@ -27,6 +34,9 @@ const getters = {
     },
     showModal: state => {
         return state.showModal;
+    },
+    showDeleteTermModal: state => {
+        return state.showDeleteTermModal;
     }
 }
 

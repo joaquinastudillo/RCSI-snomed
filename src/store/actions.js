@@ -10,9 +10,9 @@ export const loadData = ({ commit }, searchData) => {
     searchData.type = "";
   }
   let apiUrl =
-    "http://cpcr02.tcd.ie:8080/php-middleware/public/api/snomed/searchtext/";
+    "http://localhost/php-middleware/index.php/?route=search&term=";
   axios
-    .get(`${apiUrl} ${searchData.text}${searchData.type}`)
+    .get(`${apiUrl}${searchData.text}${searchData.type}`)
     .then(response => {
       const snomedItems = response.data.snomedcoreItem;
       commit("SET_SNOMED_ITEMS", snomedItems);
@@ -24,7 +24,7 @@ export const loadData = ({ commit }, searchData) => {
 };
 
 export const loadMappings = ({ commit }, id) => {
-  let apiUrl = `https://tomcat3ab5.azurewebsites.net/CancerResearchUK/interfaces/query/snomed/mappings/${id}`;
+  let apiUrl = `http://localhost/php-middleware/index.php/?route=mappings&id=${id}`;
   commit("SET_LOADING_VALUE");
   axios
     .get(apiUrl)
