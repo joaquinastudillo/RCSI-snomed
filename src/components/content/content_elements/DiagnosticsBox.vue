@@ -5,55 +5,83 @@
       :signs="this.signs"
       :riskFactors="this.riskFactors"
     />
-    <div class="box" v-if="this.filteredItems !== undefined">
+    <DeleteModal :id="this.idTerm"/>
+    <div
+      class="box"
+      v-if="this.filteredItems !== undefined && Object.keys(filteredItems).length > 0"
+    >
       <div id="headerResults">
         <h4 id="const" class="title is-3">Results: {{ Object.keys(filteredItems).length }}</h4>
         <button class="button is-info" @click="openModal" v-if="showFormButton">
           <i class="fas fa-file-medical"></i>
         </button>
       </div>
-      <div class="control column is-one-quarter" id="searchBar">
-        <input class="input" type="text" placeholder="filter..." v-model="search">
-      </div>
-      <table class="table">
-        <thead>
-          <tr>
-            <th>
-              <abbr title="Position">Id</abbr>
-            </th>
-            <th>Description</th>
-            <th>Mappings</th>
-            <!--<th>
-              <abbr title="Won">Actions</abbr>
-            </th>-->
-          </tr>
-        </thead>
-        <tbody>
-          <tr :key="item.snomedCoreID" v-for="item in filteredItems">
-            <th v-if="item.snomedCoreID">{{ item.snomedCoreID | toId }}</th>
-            <th v-else>0</th>
-            <td>
-              <a
-                v-if="item.snomedDescription"
-                class="has-text-primary"
-                :href="item.snomedCoreID"
-                target="_blank"
-              >{{ item.snomedDescription }}</a>
-              <a
-                v-else
-                class="has-text-primary"
-                target="_blank"
-              >No data available</a>
-            </td>
-            <td>
-              <a class="button is-primary is-outlined" @click="getMappings(item.snomedCoreID)" v-if="item.snomedCoreID">
-                <i class="fas fa-external-link-alt"></i>
-              </a>
-              <a class="button is-danger is-outlined" v-else disabled>
-                <i class="fas fa-external-link-alt"></i>
-              </a>
-            </td>
-            <!--<td>
+      <div id="tableWrapper">
+        <div class="control column is-one-quarter" id="searchBar">
+          <input class="input" type="text" placeholder="filter..." v-model="search">
+        </div>
+        <table class="table is-hoverable">
+          <thead>
+            <tr>
+              <th>
+                <abbr title="Position">Id</abbr>
+              </th>
+              <th>Description</th>
+              <th>Mappings</th>
+              <th>
+                <abbr>Actions</abbr>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr :key="item.snomedCoreID" v-for="item in filteredItems">
+              <th v-if="item.snomedCoreID">{{ item.snomedCoreID | toId }}</th>
+              <th v-else>0</th>
+              <td>
+                <a
+                  v-if="item.snomedDescription"
+                  class="has-text-primary"
+                  :href="item.snomedCoreID"
+                  target="_blank"
+                >{{ item.snomedDescription }}</a>
+                <a v-else class="has-text-primary" target="_blank">No data available</a>
+              </td>
+              <td>
+                <div class="buttons">
+                  <a
+                    class="button is-primary is-outlined is-small"
+                    @click="getMappings(item.snomedCoreID)"
+                    v-if="item.snomedCoreID"
+                  >
+                    <i class="fas fa-external-link-alt"></i>
+                  </a>
+                  <a class="button is-danger is-outlined is-small" v-else disabled>
+                    <i class="fas fa-external-link-alt"></i>
+                  </a>
+                </div>
+              </td>
+              <td>
+                <div class="buttons" v-if="item.snomedCoreID">
+                  <span
+                    class="button is-small is-warning has-text-white"
+                    @click="goToEdit(item.snomedCoreID)"
+                  >
+                    <i class="far fa-edit"></i>
+                  </span>
+                  <span
+                    class="button is-small is-danger"
+                    @click="openDeleteModal(item.snomedCoreID)"
+                  >
+                    <i class="far fa-trash-alt"></i>
+                  </span>
+                </div>
+                <div class="buttons" v-else>
+                  <span class="button is-small is-danger" disabled>
+                    <i class="fas fa-times"></i>
+                  </span>
+                </div>
+              </td>
+              <!--<td>
               <div class="field">
                 <input
                   class="is-checkradio is-block"
@@ -84,10 +112,11 @@
                 >
                 <label :for="`${item.snomedCoreID}/risk-factors`">Risk Factors</label>
               </div>
-            </td>-->
-          </tr>
-        </tbody>
-      </table>
+              </td>-->
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </template>
@@ -95,17 +124,20 @@
 <script>
 import { mapActions } from "vuex";
 import DiagnosticsModal from "./DiagnosticsModal";
+import DeleteModal from "../crud/DeleteModal";
 export default {
   name: "DiagnosticsBox",
   components: {
-    DiagnosticsModal
+    DiagnosticsModal,
+    DeleteModal
   },
   data() {
     return {
       signs: [],
       symptoms: [],
       riskFactors: [],
-      search: ""
+      search: "",
+      idTerm: ""
     };
   },
   mounted() {
@@ -125,11 +157,24 @@ export default {
     openModal() {
       this.$store.commit("SET_MODAL_VALUE");
     },
+    openDeleteModal(id) {
+      if (id) {
+        this.idTerm = id;
+        this.$store.commit("SET_DELETE_TERM_MODAL_VALUE");
+      }
+    },
     getMappings(id) {
       if (id) {
         let idToFind = id.split("/id/")[1];
         this.getMappingsData(idToFind);
         this.openModal();
+      }
+    },
+    goToEdit(id) {
+      if (id) {
+        this.$router.push({
+          name: "edit"
+        });
       }
     }
   },
@@ -183,5 +228,8 @@ export default {
 #searchBar {
   display: flex;
   float: right;
+}
+#tableWrapper {
+  overflow-x: auto;
 }
 </style>
