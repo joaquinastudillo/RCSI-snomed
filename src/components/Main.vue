@@ -22,8 +22,8 @@
           class="grey lighten-5"
           open-on-click
           transition
-          item-key="text"
-          item-text="text"
+          item-key="snomedCoreID"
+          item-text="snomedDescription"
           :search="search"
         >
           <template v-slot:prepend="{ item, active }">
@@ -51,7 +51,7 @@ export default {
     items() {
       return [
         {
-          text: "Clinical finding (finding)",
+          snomedDescription: "Cancer Research UK Snomed Ontology",
           children: this.snomedcoreItems
         }
       ];
@@ -60,9 +60,12 @@ export default {
   methods: {
     async fetchsnomedcoreItems(item) {
       await pause(1500);
-      let url = `http://localhost/php-middleware/index.php/?route=tree&term=${
-        item.text
-      }`;
+      let url = `http://localhost/php-middleware/index.php/?route`;
+      if (item.snomedDescription === "Cancer Research UK Snomed Ontology") {
+        url = `${url}=root-tree`;
+      } else {
+        url = `${url}=tree&term=${item.snomedDescription}`;
+      }
       return axios
         .get(url)
         .then(response => {
@@ -74,13 +77,13 @@ export default {
             });
           } else {
             if (typeof dataArray === "object") {
-              if (dataArray.text) {
+              if (dataArray.snomedDescription) {
                 dataArray.children = [];
                 item.children.push(dataArray);
               }
             } else {
               item.children.push({
-                text: "No data to display"
+                snomedDescription: "No child concepts"
               });
             }
           }
